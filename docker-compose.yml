@@ -1,0 +1,25 @@
+version: "3.3"
+services:
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+  pgsql:
+    image: postgres:12-alpine
+    # restart: always
+    ports:
+      - "0.0.0.0:7778:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+      PGDATA: /var/lib/postgresql/data/pg_data
+    volumes:
+     - pg_data:/var/lib/postgresql/data/pg_data
+volumes:
+  pg_data:
+  db:
+    driver: local
