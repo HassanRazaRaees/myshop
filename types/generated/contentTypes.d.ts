@@ -708,23 +708,82 @@ export interface ApiAboutAbout extends Schema.SingleType {
   };
 }
 
+export interface ApiOrderOrder extends Schema.CollectionType {
+  collectionName: 'orders';
+  info: {
+    singularName: 'order';
+    pluralName: 'orders';
+    displayName: 'Order';
+    description: '';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    email: Attribute.Email & Attribute.Required;
+    orderId: Attribute.UID & Attribute.Required;
+    products: Attribute.JSON & Attribute.Required;
+    paymentInfo: Attribute.JSON;
+    Address: Attribute.Text & Attribute.Required;
+    name: Attribute.String & Attribute.Required;
+    TransactionID: Attribute.UID;
+    Amount: Attribute.Integer & Attribute.Required;
+    Status: Attribute.Enumeration<['Complete', 'Incomplete']> &
+      Attribute.Required;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
 export interface ApiProductProduct extends Schema.CollectionType {
   collectionName: 'products';
   info: {
     singularName: 'product';
     pluralName: 'products';
     displayName: 'Product';
+    description: '';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    Name: Attribute.String &
+    Title: Attribute.String &
       Attribute.Required &
       Attribute.SetMinMaxLength<{
         minLength: 3;
         maxLength: 51;
       }>;
+    Slug: Attribute.UID &
+      Attribute.Required &
+      Attribute.SetMinMaxLength<{
+        minLength: 3;
+        maxLength: 130;
+      }>;
+    Description: Attribute.Text;
+    Image: Attribute.Media & Attribute.Required;
+    Category: Attribute.Enumeration<['T-shirts', 'Sticker', 'mug']> &
+      Attribute.Required &
+      Attribute.DefaultTo<'T-shirts'>;
+    Size: Attribute.String &
+      Attribute.SetMinMaxLength<{
+        maxLength: 71;
+      }>;
+    Colour: Attribute.Enumeration<['Red ', 'Green ', 'Blue', 'white', 'Black']>;
+    Prize: Attribute.Integer;
+    AvailableQty: Attribute.Integer & Attribute.Required;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -760,6 +819,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.role': PluginUsersPermissionsRole;
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::about.about': ApiAboutAbout;
+      'api::order.order': ApiOrderOrder;
       'api::product.product': ApiProductProduct;
     }
   }
